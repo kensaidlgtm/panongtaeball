@@ -33,8 +33,12 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div ref={arenaRef} className='snap-center h-screen '>
-        พาน้องเตะบอลอารีน่า
+      <div
+        ref={arenaRef}
+        className='snap-center h-screen flex items-center justify-center gap-4 flex-col'>
+        <span className='text-3xl'>สอบถามรายละเอียด & จองสนามได้ที่</span>
+        <Image src='/lineOA.png' alt='lineOA' width={300} height={300} />
+        <span>Line Official Account: พาน้องเตะบอลอารีน่า</span>
       </div>
     </>
   )
