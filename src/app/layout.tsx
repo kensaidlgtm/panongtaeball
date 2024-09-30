@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Sarabun } from 'next/font/google'
 import './globals.css'
+import Navbar from './_components/Navbar'
 
 const sarabun = Sarabun({
   preload: true,
@@ -22,7 +23,8 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${sarabun.variable} font-sarabun`}>
-        <div className='scroll-smooth snap-y snap-mandatory h-screen overflow-y-auto'>
+        <Navbar />
+        <div className='scroll-smooth snap-y snap-mandatory h-screen overflow-y-auto scrollbar-sm'>
           {children}
         </div>
       </body>

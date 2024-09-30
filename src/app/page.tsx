@@ -1,4 +1,5 @@
 'use client'
+import Button from '@/components/Button'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRef } from 'react'
@@ -29,16 +30,30 @@ export default function Home() {
               arenaRef.current?.scrollIntoView()
             }}>
             <Image src='/logo.png' alt='logo' width={50} height={50} />
-            <span className='font-medium text-xl'>พาน้องเตะบอลอารีน่า</span>
+            <span className='font-medium text-xl'>สนามหญ้าเทียม</span>
           </div>
         </div>
       </div>
       <div
         ref={arenaRef}
-        className='snap-center h-screen flex items-center justify-center gap-4 flex-col'>
-        <span className='text-3xl'>สอบถามรายละเอียด & จองสนามได้ที่</span>
+        className='p-3 snap-center h-screen flex items-center justify-center gap-4 flex-col'>
+        <span className='text-3xl text-center'>
+          สอบถามรายละเอียด & จองสนามได้ที่
+        </span>
         <Image src='/lineOA.png' alt='lineOA' width={300} height={300} />
-        <span>Line Official Account: พาน้องเตะบอลอารีน่า</span>
+        <span className='text-center'>Line Official Account: พาน้องเตะบอล</span>
+
+        <Link href='https://lin.ee/GWAaDmhm' target='_blank'>
+          <Button className='bg-line-oa' roundness='round'>
+            <Image
+              src='/line_oa_logo.png'
+              width={30}
+              height={30}
+              alt='line_oa_logo'
+            />
+            เพิ่มเพื่อนเลย !
+          </Button>
+        </Link>
       </div>
     </>
   )
