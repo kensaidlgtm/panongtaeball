@@ -42,9 +42,8 @@ export default function Home() {
         </span>
         <Image src='/lineOA.png' alt='lineOA' width={300} height={300} />
         <span className='text-center'>Line Official Account: พาน้องเตะบอล</span>
-
         <Link href='https://lin.ee/GWAaDmhm' target='_blank'>
-          <Button className='bg-line-oa' roundness='round'>
+          <Button className='bg-line-oa border-line-oa' roundness='round'>
             <Image
               src='/line_oa_logo.png'
               width={30}
