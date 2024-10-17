@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Sarabun } from 'next/font/google'
+import 'material-icons/iconfont/material-icons.css'
 import './globals.css'
 import Navbar from './_components/Navbar'
 
