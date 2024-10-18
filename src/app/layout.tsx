@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${sarabun.variable} font-sarabun antialiased`}>
-        <Navbar />
+        {/* <Navbar /> */}
         <div className='bg-white text-black scroll-smooth snap-y snap-mandatory h-screen overflow-y-auto scrollbar-sm'>
           {children}
         </div>
