@@ -5,27 +5,20 @@ import Button from '@/components/Button'
 import Icon from '@/components/Icon'
 import Input from '@/components/Input'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useActionState, useState } from 'react'
 import { useForm, UseFormRegisterReturn } from 'react-hook-form'
-import { phoneRegex } from '@/app/lib/const'
+// import { authenticate } from '@/app/lib/actions'
+import { useFormStatus } from 'react-dom'
+import { signInAction } from '@/app/actions'
 
-const schema = z
-  .object({
-    userName: z
-      .string()
-      .min(4, { message: 'ชื่อสมาชิก / อีเมลต้องมีอย่างน้อย 4 ตัวอักษร' }),
-    password: z
-      .string()
-      .min(6, { message: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร' }),
-    confirmPassword: z
-      .string()
-      .min(6, { message: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร' }),
-    tel: z.string().regex(phoneRegex, { message: 'เบอร์โทรศัพท์ไม่ถูกต้อง' }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'รหัสผ่านไม่ตรงกัน',
-    path: ['confirmPassword'],
-  })
+const schema = z.object({
+  userName: z
+    .string()
+    .min(4, { message: 'ชื่อสมาชิก / อีเมลต้องมีอย่างน้อย 4 ตัวอักษร' }),
+  password: z
+    .string()
+    .min(6, { message: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร' }),
+})
 
 type FormInput = z.infer<typeof schema>
 
@@ -55,7 +48,7 @@ function PasswordInput({
   )
 }
 
-export default function RegisterForm() {
+export default function LoginForm() {
   const {
     handleSubmit,
     register,
@@ -64,33 +57,27 @@ export default function RegisterForm() {
     resolver: zodResolver(schema),
     mode: 'onChange',
   })
+  // authenticate
+  // const [errorMessage, dispatch] = useActionState(signInAction, undefined)
+  const { pending } = useFormStatus()
 
   function onSubmit(data: FormInput) {
     console.log('submit: ', data)
   }
   console.log('errors: ', errors)
-
+  console.log('pending: ', pending)
+  // console.log('errorMessage: ', errorMessage)
   return (
+    // onSubmit={handleSubmit(onSubmit)}
     <form
-      className='flex flex-col gap-4 rounded-lg shadow-lg p-4'
-      onSubmit={handleSubmit(onSubmit)}>
-      <div className='flex flex-col gap-1'>
-        <span>
-          เบอร์โทรศัพท์ <span className='text-error'>*</span>
-        </span>
-        <Input
-          type='tel'
-          error={errors.tel?.message}
-          errorClassName='relative top-1'
-          placeholder='เบอร์โทรศัพท์'
-          register={register('tel')}
-        />
-      </div>
+      action={signInAction}
+      className='flex flex-col gap-4 rounded-lg shadow-lg p-4'>
       <div className='flex flex-col gap-1'>
         <span>
           ชื่อสมาชิก / อีเมล <span className='text-error'>*</span>
         </span>
         <Input
+          // name='userNamee'
           errorClassName='relative top-1'
           error={errors.userName?.message}
           placeholder='ชื่อสมาชิก / อีเมล'
@@ -106,16 +93,8 @@ export default function RegisterForm() {
           register={register('password')}
         />
       </div>
-      <div className='flex flex-col gap-1'>
-        <span>
-          ยืนยันรหัสผ่าน <span className='text-error'>*</span>
-        </span>
-        <PasswordInput
-          error={errors.confirmPassword?.message}
-          register={register('confirmPassword')}
-        />
-      </div>
-      <Button>สมัครสมาชิก</Button>
+      {/* {errorMessage && <span className='text-error'>{errorMessage}</span>} */}
+      <Button>เข้าสู่ระบบ</Button>
     </form>
   )
 }
