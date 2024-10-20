@@ -7,9 +7,11 @@ import Input from '@/components/Input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState, useTransition } from 'react'
 import { useForm, UseFormRegisterReturn } from 'react-hook-form'
-import { signInAction } from '@/app/actions'
+import { signInCredentials, signInGoogle } from '@/app/actions'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
+import { useSession } from 'next-auth/react'
 
 const schema = z.object({
   email: z.string().email({ message: 'อีเมลไม่ถูกต้อง' }),
@@ -60,7 +62,7 @@ export default function LoginForm() {
 
   function onSubmit(formData: FormInput) {
     startTransition(async () => {
-      const err = await signInAction({
+      const err = await signInCredentials({
         email: formData.email,
         password: formData.password,
       })
@@ -103,6 +105,15 @@ export default function LoginForm() {
       <Button loading={isPending} disabled={isPending}>
         เข้าสู่ระบบ
       </Button>
+      <div
+        onClick={async () => {
+          const url = await signInGoogle()
+          router.push(url)
+        }}
+        className='flex items-center gap-3 shadow-md text-slate-400 hover:text-secondary cursor-pointer rounded-lg bg-white p-3'>
+        <Image src={'/google.png'} width={20} height={20} alt='google' />
+        <span className='font-medium'>Continue with Google</span>
+      </div>
       <Button
         type='button'
         onClick={() => {

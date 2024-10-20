@@ -4,10 +4,57 @@ import { signIn, signOut } from '@/auth'
 import { getDbInstance } from '@/db'
 import { users } from '@/db/schema'
 import { checkPassword, saltAndHashPassword } from '@/lib/password'
-import { eq } from 'drizzle-orm'
+import { and, eq, isNull } from 'drizzle-orm'
 
 const db = getDbInstance()
-export async function signInAction({
+
+export async function signInGoogle() {
+  try {
+    const url = await signIn('google', { redirect: false })
+
+    return url
+  } catch (error) {
+    if (!(error instanceof Error)) {
+      throw new Error('invalid error type')
+    }
+
+    return error.message
+  }
+}
+
+export async function registerGoogle({
+  email,
+  name,
+  tel,
+}: {
+  email: string
+  name: string
+  tel?: string | null
+}) {
+  try {
+    const user: typeof users.$inferInsert = {
+      email,
+      name,
+      tel,
+      o_auth: 'google',
+    }
+    if (!db) {
+      throw new Error('database is not connected')
+    }
+
+    const res = await db.insert(users).values(user).returning()
+
+    return { data: res, error: undefined }
+  } catch (error) {
+    if (!(error instanceof Error)) {
+      throw new Error('invalid error type')
+    }
+
+    return { data: undefined, error: error.message }
+  }
+}
+
+export async function signInCredentials({
   email,
   password,
 }: {
@@ -29,7 +76,7 @@ export async function signInAction({
   }
 }
 
-export async function signOutAction() {
+export async function logOut() {
   try {
     await signOut({ redirect: false })
   } catch (error) {
@@ -59,7 +106,6 @@ export async function register({
       name,
       encrypted_password: encryptedPassword,
       tel,
-      rank: 'user',
     }
     if (!db) {
       throw new Error('database is not connected')
@@ -67,7 +113,7 @@ export async function register({
 
     const res = await db.insert(users).values(user).returning()
 
-    await signInAction({ email, password })
+    await signInCredentials({ email, password })
 
     return { data: res, error: undefined }
   } catch (error) {
@@ -91,14 +137,30 @@ export async function getUserFromDb({
   }
 
   const user = await db.query.users.findFirst({
-    where: eq(users.email, email),
+    where: and(eq(users.email, email), isNull(users.o_auth)),
   })
 
   if (!user) {
     return
   }
 
-  if (await checkPassword(password, user.encrypted_password)) {
+  if (
+    !user.o_auth &&
+    user.encrypted_password &&
+    (await checkPassword(password, user.encrypted_password))
+  ) {
     return user
   }
+}
+
+export async function getGoogleUserFormDb({ email }: { email: string }) {
+  if (!db) {
+    throw new Error('database is not connected')
+  }
+
+  const user = await db.query.users.findFirst({
+    where: and(eq(users.email, email), eq(users.o_auth, 'google')),
+  })
+
+  return user
 }

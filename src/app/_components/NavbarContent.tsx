@@ -1,7 +1,7 @@
 'use client'
 
 import Button from '@/components/Button'
-import { signOutAction as signOut } from '../actions'
+import { signInGoogle, logOut } from '../actions'
 import { useTransition } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { Session } from 'next-auth'
@@ -15,8 +15,9 @@ export default function NavbarContent({ session }: Props) {
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
   const pathname = usePathname()
+  const role = session?.user.role
 
-  function render() {
+  function renderAuth() {
     if (pathname === '/login') {
       return
     }
@@ -25,13 +26,14 @@ export default function NavbarContent({ session }: Props) {
       return (
         <div className='flex items-center gap-4'>
           <span>สวัสดีคุณ {session.user?.name || '-'}</span>
+          <span>Role: {role}</span>
           <Button
             intent='error'
             disabled={isPending}
             loading={isPending}
             onClick={() => {
               startTransition(async () => {
-                const err = await signOut()
+                const err = await logOut()
 
                 if (err) {
                   toast.error('ไม่สามารถออกจากระบบได้')
@@ -79,7 +81,7 @@ export default function NavbarContent({ session }: Props) {
           }
         />
         <div
-          className='font-medium cursor-pointer border border-disabled shadow-sm p-2 rounded-lg hover:opacity-90'
+          className='font-medium cursor-pointer p-2 rounded-lg hover:opacity-90'
           onClick={() =>
             startTransition(() => {
               router.push('/')
@@ -88,7 +90,7 @@ export default function NavbarContent({ session }: Props) {
           หน้าหลัก
         </div>
       </div>
-      {render()}
+      {renderAuth()}
     </div>
   )
 }

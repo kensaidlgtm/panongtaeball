@@ -83,7 +83,7 @@ export default function RegisterForm() {
       if (res.error) {
         if (
           res.error ===
-          `duplicate key value violates unique constraint "users_userName_unique"`
+          `duplicate key value violates unique constraint "unique_email_with_null_oauth"`
         ) {
           toast.error('อีเมลซ้ำ')
 

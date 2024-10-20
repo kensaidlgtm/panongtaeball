@@ -1,21 +1,54 @@
-import NextAuth from 'next-auth'
+import NextAuth, { DefaultSession } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
-import { getUserFromDb } from './app/actions'
+import {
+  getGoogleUserFormDb,
+  getUserFromDb,
+  registerGoogle,
+} from './app/actions'
+import { isRole, Role } from './db/schema'
+import Google from 'next-auth/providers/google'
+
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      role: Role
+    } & DefaultSession['user']
+  }
+
+  interface User {
+    role: Role
+  }
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
+    Google({
+      async profile(profile) {
+        const dbUser = await getGoogleUserFormDb({
+          email: profile.email,
+        })
+
+        if (!dbUser) {
+          const email = profile?.email
+          const name = profile?.name
+          const tel = profile?.phone_number
+
+          const u = await registerGoogle({
+            email,
+            name,
+            tel,
+          })
+          return { ...profile, role: u.data?.[0].role }
+        }
+        return { ...profile, role: dbUser.role }
+      },
+    }),
     Credentials({
-      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-      // e.g. domain, username, password, 2FA token, etc.
       credentials: {
         email: {},
         password: {},
       },
       authorize: async (credentials) => {
-        // logic to salt and hash password
-        // const pwHash = await saltAndHashPassword(credentials.password as string)
-
-        // logic to verify if the user exists
         const dbUser = await getUserFromDb({
           email: credentials.email as string,
           password: credentials.password as string,
@@ -28,8 +61,54 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           id: dbUser.id.toString(),
           name: dbUser.name,
           email: dbUser.email,
+          role: dbUser.role,
         }
       },
     }),
   ],
+  callbacks: {
+    jwt({ token, user }) {
+      if (user) {
+        token.role = user.role
+      }
+      return token
+    },
+    async signIn(params) {
+      if (params.account?.provider !== 'credentials') {
+        const email = params.profile?.email
+        const name = params.profile?.name
+        const tel = params.profile?.phone_number
+        if (!email || !name) {
+          throw new Error('google profile not found')
+        }
+        try {
+          await registerGoogle({
+            email,
+            name,
+            tel,
+          })
+
+          return true
+        } catch (error) {
+          if (!(error instanceof Error)) {
+            throw new Error('invalid error type')
+          }
+
+          throw new Error(error.message)
+        }
+      }
+
+      return true
+    },
+    redirect() {
+      return '/'
+    },
+    session({ session, token }) {
+      if (isRole(token.role)) {
+        session.user.role = token.role
+      }
+
+      return session
+    },
+  },
 })
