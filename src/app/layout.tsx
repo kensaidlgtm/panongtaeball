@@ -3,6 +3,7 @@ import { Sarabun } from 'next/font/google'
 import 'material-icons/iconfont/material-icons.css'
 import './globals.css'
 import Navbar from './_components/Navbar'
+import Toast from '@/components/Toast'
 
 const sarabun = Sarabun({
   preload: true,
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
   description: 'พาน้องเตะบอล ศูนย์รวมความสุขที่เกิดจากการเตะบอลกับเด็ก ๆ',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
@@ -24,6 +25,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${sarabun.variable} font-sarabun antialiased`}>
+        <Toast />
         <Navbar />
         <div className='bg-white text-black scroll-smooth snap-y snap-mandatory h-screen overflow-y-auto scrollbar-sm'>
           {children}

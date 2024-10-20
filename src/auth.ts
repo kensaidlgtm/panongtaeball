@@ -1,6 +1,5 @@
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
-import { saltAndHashPassword } from './lib/password'
 import { getUserFromDb } from './app/actions'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -9,24 +8,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // You can specify which fields should be submitted, by adding keys to the `credentials` object.
       // e.g. domain, username, password, 2FA token, etc.
       credentials: {
-        userName: {},
+        email: {},
         password: {},
       },
       authorize: async (credentials) => {
-        let user = null
-
         // logic to salt and hash password
-        const pwHash = await saltAndHashPassword(credentials.password)
+        // const pwHash = await saltAndHashPassword(credentials.password as string)
 
-        console.log('authorize', credentials, pwHash)
         // logic to verify if the user exists
-        user = await getUserFromDb(credentials.userName, pwHash)
-
-        if (!user) {
-          throw new Error('User not found.')
+        const dbUser = await getUserFromDb({
+          email: credentials.email as string,
+          password: credentials.password as string,
+        })
+        if (!dbUser) {
+          throw new Error('user not found')
         }
 
-        return user
+        return {
+          id: dbUser.id.toString(),
+          name: dbUser.name,
+          email: dbUser.email,
+        }
       },
     }),
   ],

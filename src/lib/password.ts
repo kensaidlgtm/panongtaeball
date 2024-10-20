@@ -6,3 +6,10 @@ export async function saltAndHashPassword(password: string) {
 
   return pwHash
 }
+
+export async function checkPassword(
+  password: string,
+  encryptedPassword: string
+) {
+  return await bcrypt.compare(password, encryptedPassword)
+}
