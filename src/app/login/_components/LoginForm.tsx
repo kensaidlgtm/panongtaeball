@@ -77,6 +77,16 @@ export default function LoginForm() {
     })
   }
 
+  const isWebView = (() => {
+    if (typeof window === 'undefined') {
+      return true
+    }
+
+    return /wv|WebView|; wv|iPhone.*(?!.*Safari)|Android.*(wv|Version\/\d+\.\d+ Chrome)/i.test(
+      window?.navigator?.userAgent
+    )
+  })()
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -116,15 +126,17 @@ export default function LoginForm() {
         disabled={isPending}>
         สมัครสมาชิก
       </Button>
-      <div
-        onClick={async () => {
-          const url = await signInGoogle()
-          router.push(url)
-        }}
-        className='flex items-center gap-3 shadow-md text-slate-400 hover:text-secondary cursor-pointer rounded-lg bg-white p-3'>
-        <Image src={'/google.png'} width={20} height={20} alt='google' />
-        <span className='font-medium'>Continue with Google</span>
-      </div>
+      {!isWebView && (
+        <div
+          onClick={async () => {
+            const url = await signInGoogle()
+            router.push(url)
+          }}
+          className='flex items-center gap-3 shadow-md text-slate-400 hover:text-secondary cursor-pointer rounded-lg bg-white p-3'>
+          <Image src={'/google.png'} width={20} height={20} alt='google' />
+          <span className='font-medium'>Continue with Google</span>
+        </div>
+      )}
     </form>
   )
 }
