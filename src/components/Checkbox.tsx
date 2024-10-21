@@ -39,12 +39,14 @@ export default function Checkbox({
           'aria-checked:bg-primary': !disabled,
         }),
         className
-      )}
-    >
-      <RadixCheckbox.Indicator className="leading-none text-white">
+      )}>
+      <RadixCheckbox.Indicator className='leading-none text-white'>
         <Icon
-          name="check"
-          className={twMerge('p-[6px] text-base font-extrabold', indicatorClassName)}
+          name='check'
+          className={twMerge(
+            'p-[6px] text-base font-extrabold',
+            indicatorClassName
+          )}
         />
       </RadixCheckbox.Indicator>
     </RadixCheckbox.Root>

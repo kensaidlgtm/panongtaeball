@@ -11,6 +11,7 @@ import { signInCredentials, signInGoogle } from '@/app/actions'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { isWebView } from '@/app/lib/isWebView'
 
 const schema = z.object({
   email: z.string().email({ message: 'อีเมลไม่ถูกต้อง' }),
@@ -76,16 +77,6 @@ export default function LoginForm() {
       router.refresh()
     })
   }
-
-  const isWebView = (() => {
-    if (typeof window === 'undefined') {
-      return true
-    }
-
-    return /wv|WebView|; wv|iPhone.*(?!.*Safari)|Android.*(wv|Version\/\d+\.\d+ Chrome)/i.test(
-      window?.navigator?.userAgent
-    )
-  })()
 
   return (
     <form

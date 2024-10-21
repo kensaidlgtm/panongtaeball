@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Checkbox from '@/components/Checkbox'
 import Link from 'next/link'
+import { isWebView } from '@/app/lib/isWebView'
 
 const schema = z
   .object({
@@ -105,27 +106,10 @@ export default function RegisterForm() {
     })
   }
 
-  const isWebView = (() => {
-    if (typeof window === 'undefined') {
-      return true
-    }
-
-    return /wv|WebView|; wv|iPhone.*(?!.*Safari)|Android.*(wv|Version\/\d+\.\d+ Chrome)/i.test(
-      window?.navigator?.userAgent
-    )
-  })()
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className='flex flex-col gap-4 rounded-lg shadow-lg p-4 scrollbar-sm overflow-auto'>
-      <button
-        onClick={() => {
-          window.location.href =
-            'googlechrome://navigate?url=' + window.location.href
-        }}>
-        login with google
-      </button>
       <div className='flex flex-col gap-1'>
         <span>
           อีเมล <span className='text-error'>*</span>
