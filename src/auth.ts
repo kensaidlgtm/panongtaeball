@@ -12,11 +12,13 @@ declare module 'next-auth' {
   interface Session {
     user: {
       role: Role
+      memberId: string | null
     } & DefaultSession['user']
   }
 
   interface User {
     role: Role
+    memberId: string | null
   }
 }
 
@@ -38,9 +40,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             name,
             tel,
           })
-          return { ...profile, role: u.data?.[0].role }
+          return {
+            ...profile,
+            role: u.data?.[0].role,
+            memberId: u.data?.[0].member_id,
+          }
         }
-        return { ...profile, role: dbUser.role }
+        return { ...profile, role: dbUser.role, memberId: dbUser.member_id }
       },
     }),
     Credentials({
@@ -62,6 +68,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           name: dbUser.name,
           email: dbUser.email,
           role: dbUser.role,
+          memberId: dbUser.member_id,
         }
       },
     }),
@@ -70,6 +77,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     jwt({ token, user }) {
       if (user) {
         token.role = user.role
+        token.memberId = user.memberId
       }
       return token
     },
@@ -107,6 +115,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (isRole(token.role)) {
         session.user.role = token.role
       }
+
+      session.user.memberId = token.memberId as string | null
 
       return session
     },

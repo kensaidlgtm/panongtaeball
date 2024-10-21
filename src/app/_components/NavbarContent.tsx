@@ -7,12 +7,13 @@ import { usePathname, useRouter } from 'next/navigation'
 import { Session } from 'next-auth'
 import toast from 'react-hot-toast'
 import Image from 'next/image'
-import Divider from '@/components/Divider'
+import Icon from '@/components/Icon'
 
 type Props = {
   session: Session | null
 }
 export default function NavbarContent({ session }: Props) {
+  console.log('session: ', session)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
   const pathname = usePathname()
@@ -39,12 +40,19 @@ export default function NavbarContent({ session }: Props) {
     if (session) {
       return (
         <div className='flex items-center gap-4'>
-          <span className='line-clamp-2'>
-            สวัสดีคุณ {session.user?.name || '-'}
-            <span className='sm:hidden'> ({roleDescription})</span>
+          <span className='line-clamp-2 cursor-pointer'>
+            {session.user?.name || '-'}{' '}
+            <span className='sm:hidden'>
+              {' '}
+              {session.user.role === 'member'
+                ? session.user.memberId
+                : `( ${roleDescription} )`}
+            </span>
+            <span className='max-sm:hidden'>
+              ( {roleDescription}{' '}
+              {session.user.role === 'member' && session.user.memberId} )
+            </span>
           </span>
-          <Divider className='max-sm:hidden' vertical />
-          <span className='max-sm:hidden'>ตำแหน่ง: {roleDescription}</span>
           <Button
             intent='error'
             disabled={isPending}
@@ -64,7 +72,8 @@ export default function NavbarContent({ session }: Props) {
                 router.refresh()
               })
             }}>
-            ออกจากระบบ
+            <Icon className='sm:hidden' name='logout' />
+            <span className='max-sm:hidden'>ออกจากระบบ</span>
           </Button>
         </div>
       )
