@@ -36,7 +36,7 @@ export default function Home() {
       </div>
       <div
         ref={arenaRef}
-        className='p-3 snap-center h-screen flex items-center justify-center gap-4 flex-col'>
+        className='overflow-auto p-3 snap-center h-screen flex items-center justify-center gap-4 flex-col'>
         <span className='text-3xl text-center'>
           สอบถามรายละเอียด & จองสนามได้ที่
         </span>

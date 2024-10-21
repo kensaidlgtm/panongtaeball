@@ -1,0 +1,111 @@
+'use client'
+
+import Button from '@/components/Button'
+import { logOut } from '../actions'
+import { useTransition } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { Session } from 'next-auth'
+import toast from 'react-hot-toast'
+import Image from 'next/image'
+import Divider from '@/components/Divider'
+
+type Props = {
+  session: Session | null
+}
+export default function NavbarContent({ session }: Props) {
+  const [isPending, startTransition] = useTransition()
+  const router = useRouter()
+  const pathname = usePathname()
+  const role = session?.user.role
+
+  const roleDescription = (() => {
+    switch (role) {
+      case 'user':
+        return 'สมาชิกทั่วไป'
+      case 'member':
+        return 'สมาชิกพาน้องเตะบอล'
+      case 'owner':
+        return 'เจ้าของสนาม'
+      default:
+        return 'สมาชิกทั่วไป'
+    }
+  })()
+
+  function renderAuth() {
+    if (pathname === '/login') {
+      return
+    }
+
+    if (session) {
+      return (
+        <div className='flex items-center gap-4'>
+          <span>สวัสดีคุณ {session.user?.name || '-'}</span>
+          <Divider vertical />
+          <span>ตำแหน่ง: {roleDescription}</span>
+          <Button
+            intent='error'
+            disabled={isPending}
+            loading={isPending}
+            onClick={() => {
+              startTransition(async () => {
+                const err = await logOut()
+
+                if (err) {
+                  toast.error('ไม่สามารถออกจากระบบได้')
+
+                  return
+                }
+
+                toast.success('ออกจากระบบสำเร็จ')
+                router.push('/')
+                router.refresh()
+              })
+            }}>
+            ออกจากระบบ
+          </Button>
+        </div>
+      )
+    } else {
+      return (
+        <Button
+          disabled={isPending}
+          loading={isPending}
+          onClick={() => {
+            startTransition(() => {
+              router.push('/login')
+            })
+          }}>
+          เข้าสู่ระบบ
+        </Button>
+      )
+    }
+  }
+  return (
+    <div className='flex justify-between p-3 fixed top-0 shadow-lg w-full h-16 bg-white'>
+      <div className='flex items-center gap-4'>
+        <Image
+          src='/logo.png'
+          alt='logo'
+          width={50}
+          height={50}
+          className='cursor-pointer'
+          onClick={() =>
+            startTransition(() => {
+              router.push('/')
+            })
+          }
+        />
+        <div
+          className='font-medium cursor-pointer p-2 rounded-lg hover:opacity-90'
+          onClick={() =>
+            startTransition(() => {
+              router.push('/')
+            })
+          }>
+          หน้าหลัก
+        </div>
+      </div>
+      {renderAuth()}
+    </div>
+  )
+}
