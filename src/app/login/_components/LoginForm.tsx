@@ -11,7 +11,6 @@ import { signInCredentials, signInGoogle } from '@/app/actions'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { useSession } from 'next-auth/react'
 
 const schema = z.object({
   email: z.string().email({ message: 'อีเมลไม่ถูกต้อง' }),
@@ -81,7 +80,7 @@ export default function LoginForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className='flex flex-col gap-4 rounded-lg shadow-lg p-4'>
+      className='flex flex-col gap-4 rounded-lg shadow-lg p-4 scrollbar-sm overflow-auto'>
       <div className='flex flex-col gap-1'>
         <span>
           อีเมล <span className='text-error'>*</span>
@@ -105,15 +104,6 @@ export default function LoginForm() {
       <Button loading={isPending} disabled={isPending}>
         เข้าสู่ระบบ
       </Button>
-      <div
-        onClick={async () => {
-          const url = await signInGoogle()
-          router.push(url)
-        }}
-        className='flex items-center gap-3 shadow-md text-slate-400 hover:text-secondary cursor-pointer rounded-lg bg-white p-3'>
-        <Image src={'/google.png'} width={20} height={20} alt='google' />
-        <span className='font-medium'>Continue with Google</span>
-      </div>
       <Button
         type='button'
         onClick={() => {
@@ -126,6 +116,15 @@ export default function LoginForm() {
         disabled={isPending}>
         สมัครสมาชิก
       </Button>
+      <div
+        onClick={async () => {
+          const url = await signInGoogle()
+          router.push(url)
+        }}
+        className='flex items-center gap-3 shadow-md text-slate-400 hover:text-secondary cursor-pointer rounded-lg bg-white p-3'>
+        <Image src={'/google.png'} width={20} height={20} alt='google' />
+        <span className='font-medium'>Continue with Google</span>
+      </div>
     </form>
   )
 }
