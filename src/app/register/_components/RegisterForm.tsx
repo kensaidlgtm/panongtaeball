@@ -12,6 +12,8 @@ import { register as registerUser, signInGoogle } from '@/app/actions'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import Checkbox from '@/components/Checkbox'
+import Link from 'next/link'
 
 const schema = z
   .object({
@@ -61,6 +63,7 @@ function PasswordInput({
 }
 
 export default function RegisterForm() {
+  const [checkedPolicy, setCheckedPolicy] = useState(false)
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const {
@@ -147,7 +150,6 @@ export default function RegisterForm() {
           register={register('tel')}
         />
       </div>
-
       <div className='flex flex-col gap-1'>
         <span>
           ชื่อสมาชิก <span className='text-error'>*</span>
@@ -159,8 +161,16 @@ export default function RegisterForm() {
           register={register('name')}
         />
       </div>
-
-      <Button loading={isPending} disabled={isPending}>
+      <div className='flex items-center gap-3'>
+        <Checkbox checked={checkedPolicy} onChange={setCheckedPolicy} />
+        <span>
+          คุณยอมรับ
+          <Link className='text-primary underline' href='/privacy-policy'>
+            นโยบายความเป็นส่วนตัว
+          </Link>
+        </span>
+      </div>
+      <Button loading={isPending} disabled={isPending || !checkedPolicy}>
         สมัครสมาชิก
       </Button>
       <div

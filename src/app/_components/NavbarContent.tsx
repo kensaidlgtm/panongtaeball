@@ -1,12 +1,13 @@
 'use client'
 
 import Button from '@/components/Button'
-import { signInGoogle, logOut } from '../actions'
+import { logOut } from '../actions'
 import { useTransition } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { Session } from 'next-auth'
 import toast from 'react-hot-toast'
 import Image from 'next/image'
+import Divider from '@/components/Divider'
 
 type Props = {
   session: Session | null
@@ -17,6 +18,19 @@ export default function NavbarContent({ session }: Props) {
   const pathname = usePathname()
   const role = session?.user.role
 
+  const roleDescription = (() => {
+    switch (role) {
+      case 'user':
+        return 'สมาชิกทั่วไป'
+      case 'member':
+        return 'สมาชิกพาน้องเตะบอล'
+      case 'owner':
+        return 'เจ้าของสนาม'
+      default:
+        return 'สมาชิกทั่วไป'
+    }
+  })()
+
   function renderAuth() {
     if (pathname === '/login') {
       return
@@ -26,7 +40,8 @@ export default function NavbarContent({ session }: Props) {
       return (
         <div className='flex items-center gap-4'>
           <span>สวัสดีคุณ {session.user?.name || '-'}</span>
-          <span>Role: {role}</span>
+          <Divider vertical />
+          <span>ตำแหน่ง: {roleDescription}</span>
           <Button
             intent='error'
             disabled={isPending}
