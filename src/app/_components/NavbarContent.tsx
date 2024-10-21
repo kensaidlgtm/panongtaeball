@@ -39,9 +39,12 @@ export default function NavbarContent({ session }: Props) {
     if (session) {
       return (
         <div className='flex items-center gap-4'>
-          <span>สวัสดีคุณ {session.user?.name || '-'}</span>
-          <Divider vertical />
-          <span>ตำแหน่ง: {roleDescription}</span>
+          <span className='line-clamp-2'>
+            สวัสดีคุณ {session.user?.name || '-'}
+            <span className='sm:hidden'> ({roleDescription})</span>
+          </span>
+          <Divider className='max-sm:hidden' vertical />
+          <span className='max-sm:hidden'>ตำแหน่ง: {roleDescription}</span>
           <Button
             intent='error'
             disabled={isPending}
@@ -81,7 +84,7 @@ export default function NavbarContent({ session }: Props) {
     }
   }
   return (
-    <div className='flex justify-between p-3 fixed top-0 shadow-lg w-full h-16 bg-white'>
+    <div className='flex justify-between p-3 gap-4 fixed top-0 shadow-lg w-full h-16 bg-white'>
       <div className='flex items-center gap-4'>
         <Image
           src='/logo.png'
@@ -102,7 +105,7 @@ export default function NavbarContent({ session }: Props) {
               router.push('/')
             })
           }>
-          หน้าหลัก
+          <span className='max-sm:hidden'>หน้าหลัก</span>
         </div>
       </div>
       {renderAuth()}

@@ -22,6 +22,10 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+div, span {
+  color: #6C6C6C;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
