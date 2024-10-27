@@ -13,7 +13,6 @@ type Props = {
   session: Session | null
 }
 export default function NavbarContent({ session }: Props) {
-  console.log('session: ', session)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
   const pathname = usePathname()
@@ -94,14 +93,14 @@ export default function NavbarContent({ session }: Props) {
   }
 
   return (
-    <div className='flex justify-between p-3 gap-4 fixed top-0 shadow-lg w-full h-16 bg-white'>
-      <div className='flex items-center gap-4'>
+    <div className='flex justify-between p-3 gap-4 shadow-lg w-full h-16 bg-white z-10 relative'>
+      <div className='flex items-center gap-1 xl:gap-4'>
         <Image
           src='/logo.png'
           alt='logo'
           width={50}
           height={50}
-          className='cursor-pointer'
+          className='max-sm:hidden cursor-pointer'
           onClick={() =>
             startTransition(() => {
               router.push('/')
@@ -109,13 +108,44 @@ export default function NavbarContent({ session }: Props) {
           }
         />
         <div
-          className='font-medium cursor-pointer p-2 rounded-lg hover:opacity-90'
+          className='font-medium cursor-pointer p-2 rounded-lg hover:opacity-90 flex items-center'
           onClick={() =>
             startTransition(() => {
               router.push('/')
             })
           }>
-          <span className='max-sm:hidden'>หน้าหลัก</span>
+          <Icon className='xl:hidden' name='home' outlined />
+          <span className='max-xl:hidden'>หน้าหลัก</span>
+        </div>
+        <div
+          className='font-medium cursor-pointer p-2 rounded-lg hover:opacity-90 flex items-center'
+          onClick={() =>
+            startTransition(() => {
+              router.push('/#arena')
+            })
+          }>
+          <Icon className='xl:hidden' name='sports_soccer' outlined />
+          <span className='max-xl:hidden'>สนามหญ้าเทียม</span>
+        </div>
+        <div
+          className='font-medium cursor-pointer p-2 rounded-lg hover:opacity-90 flex items-center'
+          onClick={() =>
+            startTransition(() => {
+              router.push('/#policy')
+            })
+          }>
+          <Icon className='xl:hidden' name='policy' outlined />
+          <span className='max-xl:hidden'>กฎระเบียบและการจอง</span>
+        </div>
+        <div
+          className='font-medium cursor-pointer p-2 rounded-lg hover:opacity-90 flex items-center'
+          onClick={() =>
+            startTransition(() => {
+              router.push('/#member')
+            })
+          }>
+          <Icon className='xl:hidden' name='star_outline' />
+          <span className='max-xl:hidden'>สมาชิกพาน้องเตะบอล</span>
         </div>
       </div>
       {renderAuth()}

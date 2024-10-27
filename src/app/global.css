@@ -18,8 +18,6 @@
 
 body {
   color: #6C6C6C;
-  background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb)))
-    rgb(var(--background-start-rgb));
 }
 
 @layer utilities {
@@ -32,9 +30,7 @@ body {
   width: 8px;
   height: 8px;
 }
-/* *::-webkit-scrollbar-track {
-  background: #f1f1f1;
-} */
+
 *::-webkit-scrollbar-thumb:hover {
   background: #e2e2e4;
 }

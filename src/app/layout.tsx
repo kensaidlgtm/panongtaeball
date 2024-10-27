@@ -4,6 +4,7 @@ import 'material-icons/iconfont/material-icons.css'
 import './global.css'
 import Navbar from './_components/Navbar'
 import Toast from '@/components/Toast'
+import Footer from './_components/Footer'
 
 const sarabun = Sarabun({
   preload: true,
@@ -27,9 +28,10 @@ export default async function RootLayout({
       <body className={`${sarabun.variable} font-sarabun antialiased`}>
         <Toast />
         <Navbar />
-        <div className='bg-white text-black scroll-smooth snap-y snap-mandatory h-screen overflow-y-auto scrollbar-sm'>
+        <div className='bg-white text-black scroll-smooth snap-y snap-mandatory h-[calc(100vh-128px)] overflow-y-auto scrollbar-sm'>
           {children}
         </div>
+        <Footer />
       </body>
     </html>
   )
