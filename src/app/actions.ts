@@ -164,3 +164,23 @@ export async function getGoogleUserFormDb({ email }: { email: string }) {
 
   return user
 }
+
+export async function manageFirstLight(action: 'on' | 'off') {
+  if (
+    process.env.ENDPOINT_API_URL &&
+    process.env.FIRST_LIGHT &&
+    process.env.IOT_AUTH_TOKEN
+  ) {
+    const data = await fetch(
+      `${process.env.ENDPOINT_API_URL}/${process.env.FIRST_LIGHT}/${action}`,
+      {
+        method: 'PUT',
+        headers: {
+          'X-Auth-Token': process.env.IOT_AUTH_TOKEN,
+        },
+      }
+    )
+
+    console.log('data: ', data.json())
+  }
+}
