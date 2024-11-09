@@ -171,7 +171,7 @@ export async function manageFirstLight(action: 'on' | 'off') {
     process.env.FIRST_LIGHT &&
     process.env.IOT_AUTH_TOKEN
   ) {
-    const data = await fetch(
+    await fetch(
       `${process.env.ENDPOINT_API_URL}/${process.env.FIRST_LIGHT}/${action}`,
       {
         method: 'PUT',
@@ -180,7 +180,59 @@ export async function manageFirstLight(action: 'on' | 'off') {
         },
       }
     )
+  }
+}
 
-    console.log('data: ', data.json())
+export async function manageSecondLight(action: 'on' | 'off') {
+  if (
+    process.env.ENDPOINT_API_URL &&
+    process.env.SECOND_LIGHT &&
+    process.env.IOT_AUTH_TOKEN
+  ) {
+    await fetch(
+      `${process.env.ENDPOINT_API_URL}/${process.env.SECOND_LIGHT}/${action}`,
+      {
+        method: 'PUT',
+        headers: {
+          'X-Auth-Token': process.env.IOT_AUTH_TOKEN,
+        },
+      }
+    )
+  }
+}
+
+export async function manageThirdLight(action: 'on' | 'off') {
+  if (
+    process.env.ENDPOINT_API_URL &&
+    process.env.THIRD_LIGHT &&
+    process.env.IOT_AUTH_TOKEN
+  ) {
+    await fetch(
+      `${process.env.ENDPOINT_API_URL}/${process.env.THIRD_LIGHT}/${action}`,
+      {
+        method: 'PUT',
+        headers: {
+          'X-Auth-Token': process.env.IOT_AUTH_TOKEN,
+        },
+      }
+    )
+  }
+}
+
+export async function manageFourthLight(action: 'on' | 'off') {
+  if (
+    process.env.ENDPOINT_API_URL &&
+    process.env.FOURTH_LIGHT &&
+    process.env.IOT_AUTH_TOKEN
+  ) {
+    await fetch(
+      `${process.env.ENDPOINT_API_URL}/${process.env.FOURTH_LIGHT}/${action}`,
+      {
+        method: 'PUT',
+        headers: {
+          'X-Auth-Token': process.env.IOT_AUTH_TOKEN,
+        },
+      }
+    )
   }
 }
