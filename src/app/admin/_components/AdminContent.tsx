@@ -1,4 +1,5 @@
 'use client'
+
 import {
   manageFirstLight,
   manageFourthLight,
@@ -6,72 +7,38 @@ import {
   manageThirdLight,
 } from '@/app/actions'
 import Button from '@/components/Button'
+
+// Reusable component for light controls
+const LightControl = ({
+  lightNumber,
+  manageLight,
+}: {
+  lightNumber: number
+  manageLight: (state: 'on' | 'off') => Promise<void>
+}) => (
+  <div className='flex flex-col gap-3 items-center justify-center'>
+    <span>ไฟสนามดวงที่{lightNumber}</span>
+    <div className='flex items-center gap-3'>
+      <Button intent='success' onClick={async () => await manageLight('on')}>
+        เปิดไฟ
+      </Button>
+      <Button intent='error' onClick={async () => await manageLight('off')}>
+        ปิดไฟ
+      </Button>
+    </div>
+  </div>
+)
+
 export default function AdminContent() {
   return (
     <div className='flex flex-col h-[calc(100vh-128px)] p-6'>
       <div className='flex flex-col items-center gap-4 rounded-lg shadow-lg p-6'>
         <span className='font-medium text-2xl'>จัดการไฟสนาม</span>
         <div className='flex flex-wrap gap-4'>
-          <div className='flex flex-col gap-3 items-center justify-center'>
-            <span>ไฟสนามดวงที่1</span>
-            <div className='flex items-center gap-3'>
-              <Button
-                intent='success'
-                onClick={async () => await manageFirstLight('on')}>
-                เปิดไฟ
-              </Button>
-              <Button
-                intent='error'
-                onClick={async () => await manageFirstLight('off')}>
-                ปิดไฟ
-              </Button>
-            </div>
-          </div>
-          <div className='flex flex-col gap-3 items-center justify-center'>
-            <span>ไฟสนามดวงที่2</span>
-            <div className='flex items-center gap-3'>
-              <Button
-                intent='success'
-                onClick={async () => await manageSecondLight('on')}>
-                เปิดไฟ
-              </Button>
-              <Button
-                intent='error'
-                onClick={async () => await manageSecondLight('off')}>
-                ปิดไฟ
-              </Button>
-            </div>
-          </div>
-          <div className='flex flex-col gap-3 items-center justify-center'>
-            <span>ไฟสนามดวงที่3</span>
-            <div className='flex items-center gap-3'>
-              <Button
-                intent='success'
-                onClick={async () => await manageThirdLight('on')}>
-                เปิดไฟ
-              </Button>
-              <Button
-                intent='error'
-                onClick={async () => await manageThirdLight('off')}>
-                ปิดไฟ
-              </Button>
-            </div>
-          </div>
-          <div className='flex flex-col gap-3 items-center justify-center'>
-            <span>ไฟสนามดวงที่4</span>
-            <div className='flex items-center gap-3'>
-              <Button
-                intent='success'
-                onClick={async () => await manageFourthLight('on')}>
-                เปิดไฟ
-              </Button>
-              <Button
-                intent='error'
-                onClick={async () => await manageFourthLight('off')}>
-                ปิดไฟ
-              </Button>
-            </div>
-          </div>
+          <LightControl lightNumber={1} manageLight={manageFirstLight} />
+          <LightControl lightNumber={2} manageLight={manageSecondLight} />
+          <LightControl lightNumber={3} manageLight={manageThirdLight} />
+          <LightControl lightNumber={4} manageLight={manageFourthLight} />
         </div>
       </div>
     </div>
